@@ -12,16 +12,39 @@ int main()
 {
     string expression;
 
-    string infix = "6*(5+(2+3)*8+3)";
-    cout << "Infix: " << infix << endl;
+    // Predefined test cases
+    string testCases[] = {
+        "1 + 2 * 3 ^ 4",                                 // Expected: 163
+        "-1 ^ 2 * 3 + 4 + 5 * 6 ^ 2",                    // Expected: 187
+        "( 1 + 2 ) * ( 3 + 4 )",                         // Expected: 21
+        "( ( ( 1 + 2 ) ) ) ^ ( ( ( 3 + ( 4 - 5 ) ) ) )", // Expected: 9
+        "6*(5+(2+3)*8+3)"                                // Expected: 288
+    };
 
-    string postfix = translate(infix);
-    cout << "Postfix: " << postfix << endl;
+    cout << "Running predefined test cases:" << endl << endl;
+    cout << "-------------------------------------" << endl;
+    
+    for (const auto& infix : testCases) 
+    {
+        cout << "Infix: " << infix << endl;
 
-    int result = polish(postfix);
-    cout << "Result: " << result << endl;
-    cout << endl;
-    cout << endl;
+        try 
+        {
+            string postfix = translate(infix);
+            cout << "Postfix: " << postfix << endl;
+            int result = polish(postfix);
+            cout << "Result: " << result << endl;
+        } 
+        
+        catch (const exception &e) 
+        {
+            cout << "Error: " << e.what() << endl;
+        }
+
+        cout << "-------------------------------------" << endl;
+        cout << endl << endl;
+    }
+
 
     cout << "Enter infix expressions: " << endl;
 

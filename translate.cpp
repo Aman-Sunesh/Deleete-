@@ -17,6 +17,11 @@ int precedence(char op)
         return 2;
     }
 
+    if (op == '^')
+    {
+        return 3;
+    }
+
     return 0; 
 }
 
@@ -32,6 +37,35 @@ string translate(const string& exp)
         {
             continue;
         }
+
+        // If current and next characters are operators, throw an error.
+        if (i + 1 < n &&
+            ((exp[i] == '+' || exp[i] == '-' || exp[i] == '*' || exp[i] == '/' || exp[i] == '%' || exp[i] == '^') &&
+            (exp[i+1] == '+' || exp[i+1] == '-' || exp[i+1] == '*' || exp[i+1] == '/' || exp[i+1] == '%' || exp[i+1] == '^')))
+        {
+            if (exp[i] == '-' && exp[i+1] == '-') 
+            {
+                throw runtime_error("Error! Ambiguous consecutive '-' operators detected. Use parentheses to clarify.");
+            }
+            throw runtime_error("Error! Consecutive operators detected. Check your expression.");
+        }
+
+        // To detect negative numbers
+        if (exp[i] == '-' && (i == 0 || exp[i-1] == '(' || exp[i-1] == '+' || exp[i-1] == '-' ||
+                                        exp[i-1] == '*' || exp[i-1] == '/' || exp[i-1] == '%' || 
+                                        exp[i-1] == '^')) 
+            {
+             if (i + 1 < n && isdigit(exp[i+1])) 
+             {
+                 result.push_back('-');
+                 result.push_back(exp[i+1]);
+                 i++; // Skip the digit that was just appended with a '-' sign
+                 continue;
+             }
+             else {
+                 throw runtime_error("Error! Invalid Negative Number Format.");
+             }
+         }
 
         if (isdigit(exp[i]))
         {
@@ -55,10 +89,15 @@ string translate(const string& exp)
             {
                 s.pop(); // We remove '(', but do not append it to the result
             }
+
+            else 
+            {
+                throw runtime_error("Error! Mismatched parentheses.");
+            }
         }
 
         else if ((exp[i] == '+') || (exp[i] == '-') || (exp[i] == '*') 
-                || (exp[i] == '/') || (exp[i] == '%'))
+                || (exp[i] == '/') || (exp[i] == '%') || (exp[i] == '^'))
         {
             while (!s.empty() && precedence(s.top()) >= precedence(exp[i]))
             {
@@ -67,6 +106,10 @@ string translate(const string& exp)
             }
 
             s.push(exp[i]);
+        }
+
+        else{
+            throw runtime_error("Error! Invalid Character in Expression.");
         }
     }
 
