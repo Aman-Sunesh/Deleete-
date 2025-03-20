@@ -39,8 +39,7 @@ string translate(const string& exp)
         }
 
         // If current and next characters are operators, throw an error.
-        if (i + 1 < n &&
-            ((exp[i] == '+' || exp[i] == '-' || exp[i] == '*' || exp[i] == '/' || exp[i] == '%' || exp[i] == '^') &&
+        if (i + 1 < n && ((exp[i] == '+' || exp[i] == '-' || exp[i] == '*' || exp[i] == '/' || exp[i] == '%' || exp[i] == '^') &&
             (exp[i+1] == '+' || exp[i+1] == '-' || exp[i+1] == '*' || exp[i+1] == '/' || exp[i+1] == '%' || exp[i+1] == '^')))
         {
             if (exp[i] == '-' && exp[i+1] == '-') 
@@ -113,9 +112,14 @@ string translate(const string& exp)
         }
     }
 
-    while (!s.empty())
+    while (!s.empty()) 
     {
-        result += s.top();
+        if (s.top() == '(')
+        {
+            throw runtime_error("Error! Mismatched parentheses: missing ')'.");
+        }
+        
+        result.push_back(s.top());
         s.pop();
     }
 
